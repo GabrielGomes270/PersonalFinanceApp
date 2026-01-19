@@ -5,6 +5,7 @@ using PersonalFinanceApp.Domain.Entities;
 using PersonalFinanceApp.DTOs;
 using PersonalFinanceApp.Extensions;
 using PersonalFinanceApp.Repositories.Interfaces;
+using PersonalFinanceApp.Shared;
 
 namespace PersonalFinanceApp.Controllers
 {
@@ -37,17 +38,15 @@ namespace PersonalFinanceApp.Controllers
                 page,
                 pageSize);
 
-            var result = expenses.Select(expense => new ExpenseResponseDto
+            return Ok(expenses.Select(e => new ExpenseResponseDto
             {
-                Id = expense.Id,
-                Description = expense.Description,
-                Amount = expense.Amount,
-                Date = expense.Date,
-                CategoryId = expense.CategoryId,
-                CategoryName = expense.Category.Name
-            });
-
-            return Ok(result);
+                Id = e.Id,
+                Description = e.Description,
+                Amount = e.Amount,
+                Date = e.Date,
+                CategoryId = e.CategoryId,
+                CategoryName = e.Category.Name
+            }));
         }
 
         [HttpGet("{id}")]
@@ -61,8 +60,8 @@ namespace PersonalFinanceApp.Controllers
             {
                 return NotFound(new { message = "Despesa não encontrada." });
             }
-            
-            var result = new ExpenseResponseDto
+
+            return Ok(new ExpenseResponseDto
             {
                 Id = expense.Id,
                 Description = expense.Description,
@@ -70,9 +69,7 @@ namespace PersonalFinanceApp.Controllers
                 Date = expense.Date,
                 CategoryId = expense.CategoryId,
                 CategoryName = expense.Category.Name
-            };
-
-            return Ok(result);
+            });
         }
 
         [HttpPost]
@@ -96,7 +93,18 @@ namespace PersonalFinanceApp.Controllers
                 userId,
                 dto.Amount);
 
-            return Ok();
+            return CreatedAtAction(
+            nameof(GetExpenseById),
+            new { id = expense.Id },
+            new ExpenseResponseDto
+            {
+                Id = expense.Id,
+                Description = expense.Description,
+                Amount = expense.Amount,
+                Date = expense.Date,
+                CategoryId = expense.CategoryId,
+                CategoryName = expense.Category.Name
+            });
         }
 
         [HttpPut("{id}")]
@@ -123,7 +131,15 @@ namespace PersonalFinanceApp.Controllers
             userId,
             id);
 
-            return NoContent();
+            return Ok(new ExpenseResponseDto
+            {
+                Id = expense.Id,
+                Description = expense.Description,
+                Amount = expense.Amount,
+                Date = expense.Date,
+                CategoryId = expense.CategoryId,
+                CategoryName = expense.Category.Name
+            });
         }
 
         [HttpDelete("{id}")]

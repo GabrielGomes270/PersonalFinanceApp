@@ -27,14 +27,12 @@ namespace PersonalFinanceApp.Controllers
         {
             var userId = User.GetUserId();
             var categories = await _categoryRepository.GetAllCategoriesAsync(userId);
-            
-            var result = categories.Select(categories => new CategoryResponseDto
-            {
-                Id = categories.Id,
-                Name = categories.Name,
-            });
 
-            return Ok(result);
+            return Ok(categories.Select(c => new CategoryResponseDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+            }));
         }
 
         [HttpGet("{id}")]
@@ -47,14 +45,13 @@ namespace PersonalFinanceApp.Controllers
             {
                 return NotFound(new {message = "Categoria não encontrada."});
             }
-            
-            var result = new CategoryResponseDto
+
+            return Ok(new CategoryResponseDto
             {
                 Id = category.Id,
                 Name = category.Name,
-            };
-
-            return Ok(result);
+                Description = category.Description
+            });
         }
 
         [HttpPost]
@@ -75,7 +72,16 @@ namespace PersonalFinanceApp.Controllers
             userId,
             dto.Name);
 
-            return Ok();
+            return CreatedAtAction(
+            nameof(GetCategoryById),
+            new { id = category.Id },
+            new CategoryResponseDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description
+            });
+
         }
 
         [HttpPut("{id}")]
@@ -99,7 +105,12 @@ namespace PersonalFinanceApp.Controllers
             userId,
             id);
 
-            return NoContent();
+            return Ok(new CategoryResponseDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description
+            });
         }
 
         [HttpDelete("{id}")]
