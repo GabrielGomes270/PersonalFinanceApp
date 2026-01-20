@@ -15,11 +15,15 @@ namespace PersonalFinanceApp.Controllers
     public class ExpenseController : ControllerBase
     {
         private readonly IExpenseRepository _expenseRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly ILogger<ExpenseController> _logger;
-        public ExpenseController(IExpenseRepository expenseRepository, ILogger<ExpenseController> logger)
+        public ExpenseController(IExpenseRepository expenseRepository, 
+            ILogger<ExpenseController> logger, 
+            ICategoryRepository categoryRepository)
         {
             _expenseRepository = expenseRepository;
             _logger = logger;
+            _categoryRepository = categoryRepository;
         }
 
         [HttpGet]
@@ -31,22 +35,31 @@ namespace PersonalFinanceApp.Controllers
         {
             var userId = User.GetUserId();
 
-            var expenses = await _expenseRepository.GetAllExpensesAsync(
+            var result = await _expenseRepository.GetAllExpensesAsync(
                 userId,
                 categoryId,
                 month,
                 page,
                 pageSize);
 
-            return Ok(expenses.Select(e => new ExpenseResponseDto
+            var response = new PagedResultDto<ExpenseResponseDto>
             {
-                Id = e.Id,
-                Description = e.Description,
-                Amount = e.Amount,
-                Date = e.Date,
-                CategoryId = e.CategoryId,
-                CategoryName = e.Category.Name
-            }));
+                Items = result.Items.Select(expense => new ExpenseResponseDto
+                {
+                    Id = expense.Id,
+                    Description = expense.Description,
+                    Amount = expense.Amount,
+                    Date = expense.Date,
+                    CategoryId = expense.CategoryId,
+                    CategoryName = expense.Category.Name
+                }),
+
+                Page = result.Page,
+                PageSize = result.PageSize,
+                TotalItems = result.TotalItems
+            };
+
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
@@ -77,6 +90,13 @@ namespace PersonalFinanceApp.Controllers
         {
             var userId = User.GetUserId();
 
+            var categoryExists = await _categoryRepository.GetCategoryByIdAsync(dto.CategoryId, userId);
+
+            if (categoryExists == null)
+            {
+                throw new KeyNotFoundException("Categoria não encontrada.");
+            }
+
             var expense = new Expense
             {
                 Description = dto.Description,
@@ -87,6 +107,7 @@ namespace PersonalFinanceApp.Controllers
             };
 
             await _expenseRepository.AddExpenseAsync(expense);
+
 
             _logger.LogInformation(
                 "Usuário {UserId} criou uma despesa de {Amount}",
@@ -103,7 +124,6 @@ namespace PersonalFinanceApp.Controllers
                 Amount = expense.Amount,
                 Date = expense.Date,
                 CategoryId = expense.CategoryId,
-                CategoryName = expense.Category.Name
             });
         }
 
@@ -119,11 +139,24 @@ namespace PersonalFinanceApp.Controllers
                 throw new KeyNotFoundException("Despesa não encontrada.");
             }
 
+            var categoryExists = await _categoryRepository.GetCategoryByIdAsync(dto.CategoryId ?? expense.CategoryId, userId);
 
-            expense.Description = dto.Description;
-            expense.Amount = dto.Amount;
-            expense.Date = dto.Date;
-            expense.CategoryId = dto.CategoryId;
+            if (categoryExists == null)
+            {
+                throw new KeyNotFoundException("Categoria não encontrada.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.Description))
+                expense.Description = dto.Description;
+
+            if (dto.Amount.HasValue)
+                expense.Amount = dto.Amount.Value;
+
+            if (dto.Date.HasValue)
+                expense.Date = dto.Date.Value;
+
+            if (dto.CategoryId.HasValue)
+                expense.CategoryId = dto.CategoryId.Value;
 
             await _expenseRepository.UpdateExpenseAsync(expense);
 

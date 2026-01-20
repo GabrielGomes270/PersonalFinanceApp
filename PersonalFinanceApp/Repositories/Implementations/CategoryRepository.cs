@@ -22,10 +22,10 @@ namespace PersonalFinanceApp.Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<Category?> GetCategoryByIdAsync(int id, int userId)
+        public async Task<Category?> GetCategoryByIdAsync(int categoryId, int userId)
         {
             return await _context.Categories
-                .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+                .FirstOrDefaultAsync(c => c.Id == categoryId && c.UserId == userId);
         }
 
         public async Task AddCategoryAsync(Category category)

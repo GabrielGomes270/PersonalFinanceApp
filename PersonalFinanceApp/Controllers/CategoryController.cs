@@ -32,6 +32,7 @@ namespace PersonalFinanceApp.Controllers
             {
                 Id = c.Id,
                 Name = c.Name,
+                Description = c.Description
             }));
         }
 

@@ -12,8 +12,8 @@ using PersonalFinanceApp.Data;
 namespace PersonalFinanceApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260119211826_AddUserToCategoriesAndExpenses")]
-    partial class AddUserToCategoriesAndExpenses
+    [Migration("20260120212151_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,7 +44,7 @@ namespace PersonalFinanceApp.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -52,6 +52,29 @@ namespace PersonalFinanceApp.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2026, 1, 20, 21, 21, 51, 16, DateTimeKind.Utc).AddTicks(9456),
+                            Description = "Gastos com comida.",
+                            Name = "Alimentação"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2026, 1, 20, 21, 21, 51, 16, DateTimeKind.Utc).AddTicks(9461),
+                            Description = "Gastos com transporte.",
+                            Name = "Transporte"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2026, 1, 20, 21, 21, 51, 16, DateTimeKind.Utc).AddTicks(9462),
+                            Description = "Gastos com moradia.",
+                            Name = "Moradia"
+                        });
                 });
 
             modelBuilder.Entity("PersonalFinanceApp.Domain.Entities.Expense", b =>
@@ -121,10 +144,9 @@ namespace PersonalFinanceApp.Migrations
             modelBuilder.Entity("PersonalFinanceApp.Domain.Entities.Category", b =>
                 {
                     b.HasOne("PersonalFinanceApp.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Categories")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
@@ -134,11 +156,11 @@ namespace PersonalFinanceApp.Migrations
                     b.HasOne("PersonalFinanceApp.Domain.Entities.Category", "Category")
                         .WithMany("Expenses")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("PersonalFinanceApp.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Expenses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -150,6 +172,13 @@ namespace PersonalFinanceApp.Migrations
 
             modelBuilder.Entity("PersonalFinanceApp.Domain.Entities.Category", b =>
                 {
+                    b.Navigation("Expenses");
+                });
+
+            modelBuilder.Entity("PersonalFinanceApp.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Categories");
+
                     b.Navigation("Expenses");
                 });
 #pragma warning restore 612, 618

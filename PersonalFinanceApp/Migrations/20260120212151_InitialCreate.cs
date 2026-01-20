@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace PersonalFinanceApp.Migrations
 {
     /// <inheritdoc />
@@ -43,7 +45,9 @@ namespace PersonalFinanceApp.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
@@ -80,7 +84,7 @@ namespace PersonalFinanceApp.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Expenses_Users_UserId",
                         column: x => x.UserId,
@@ -89,6 +93,16 @@ namespace PersonalFinanceApp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "CreatedAt", "Description", "Name", "UserId" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2026, 1, 20, 21, 21, 51, 16, DateTimeKind.Utc).AddTicks(9456), "Gastos com comida.", "Alimentação", null },
+                    { 2, new DateTime(2026, 1, 20, 21, 21, 51, 16, DateTimeKind.Utc).AddTicks(9461), "Gastos com transporte.", "Transporte", null },
+                    { 3, new DateTime(2026, 1, 20, 21, 21, 51, 16, DateTimeKind.Utc).AddTicks(9462), "Gastos com moradia.", "Moradia", null }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_UserId",

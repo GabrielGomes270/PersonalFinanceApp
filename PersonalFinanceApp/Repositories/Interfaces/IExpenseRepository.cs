@@ -1,10 +1,11 @@
 ﻿using PersonalFinanceApp.Domain.Entities;
+using PersonalFinanceApp.DTOs;
 
 namespace PersonalFinanceApp.Repositories.Interfaces
 {
     public interface IExpenseRepository
     {
-        Task<IEnumerable<Expense>> GetAllExpensesAsync(
+        Task<PagedResultDto<Expense>> GetAllExpensesAsync(
             int userID,
             int? categoryId,
             int? month,

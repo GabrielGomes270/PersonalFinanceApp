@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PersonalFinanceApp.Data;
 using PersonalFinanceApp.Domain.Entities;
+using PersonalFinanceApp.DTOs;
 using PersonalFinanceApp.Repositories.Interfaces;
+using PersonalFinanceApp.Shared;
 
 namespace PersonalFinanceApp.Repositories.Implementations
 {
@@ -15,7 +17,7 @@ namespace PersonalFinanceApp.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<Expense>> GetAllExpensesAsync(
+        public async Task<PagedResultDto<Expense>> GetAllExpensesAsync(
             int userID, 
             int? categoryId, 
             int? month, 
@@ -37,11 +39,21 @@ namespace PersonalFinanceApp.Repositories.Implementations
                 query = query.Where(e => e.Date.Month == month);
             }
 
-            return await query
+            var totalItems = await query.CountAsync();
+
+            var items = await query
                 .OrderByDescending(e => e.Date)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+
+            return new PagedResultDto<Expense>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = totalItems
+            };
         }
 
         public async Task<Expense?> GetExpenseByIdAsync(int id, int userId)
