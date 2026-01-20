@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace PersonalFinanceApp.DTOs
+﻿namespace PersonalFinanceApp.DTOs
 {
-    public class CreateExpenseDto
+    public class UpdateExpenseDto
     {
         public string Description { get; set; } = string.Empty;
         public decimal Amount { get; set; }

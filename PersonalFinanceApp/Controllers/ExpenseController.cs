@@ -108,7 +108,7 @@ namespace PersonalFinanceApp.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateExpense(int id, CreateExpenseDto dto)
+        public async Task<IActionResult> UpdateExpense(int id, UpdateExpenseDto dto)
         {
             var userId = User.GetUserId();
 

@@ -1,4 +1,6 @@
 ﻿namespace PersonalFinanceApp.Middlewares;
+using FluentValidation;
+using PersonalFinanceApp.Responses;
 using System.Net;
 using System.Text.Json;
 
@@ -21,6 +23,7 @@ public class ExceptionHandlingMiddleware
         {
             await _next(context);
         }
+
         catch (KeyNotFoundException ex)
         {
             _logger.LogWarning(ex, "Recurso não encontrado");
@@ -30,6 +33,7 @@ public class ExceptionHandlingMiddleware
                 HttpStatusCode.NotFound,
                 ex.Message);
         }
+
         catch (UnauthorizedAccessException ex)
         {
             _logger.LogWarning(ex, "Acesso não autorizado");
@@ -39,6 +43,27 @@ public class ExceptionHandlingMiddleware
                 HttpStatusCode.Unauthorized,
                 "Não autorizado");
         }
+
+        catch (FluentValidation.ValidationException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            context.Response.ContentType = "application/json";
+
+            var errors = ex.Errors
+                .GroupBy(e => e.PropertyName)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(e => e.ErrorMessage).ToArray()
+                );
+
+            var response = new ValidationErrorResponse
+            {
+                Errors = errors
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro inesperado");
@@ -48,6 +73,8 @@ public class ExceptionHandlingMiddleware
                 HttpStatusCode.InternalServerError,
                 "Erro interno no servidor");
         }
+
+
     }
 
     private static async Task WriteResponseAsync(

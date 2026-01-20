@@ -85,7 +85,7 @@ namespace PersonalFinanceApp.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, CreateCategoryDto dto)
+        public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDto dto)
         {
             var userId = User.GetUserId();
 
