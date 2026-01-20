@@ -43,7 +43,7 @@ namespace PersonalFinanceApp.Controllers
             var category = await _categoryRepository.GetCategoryByIdAsync(id, userId);
             if (category == null)
             {
-                return NotFound(new {message = "Categoria não encontrada."});
+                throw new KeyNotFoundException("Categoria não encontrada.");
             }
 
             return Ok(new CategoryResponseDto
@@ -93,7 +93,7 @@ namespace PersonalFinanceApp.Controllers
 
             if (category == null)
             {
-                return NotFound(new { message = "Categoria não encontrada." });
+                throw new KeyNotFoundException("Categoria não encontrada.");
             }
 
             category.Name = dto.Name;

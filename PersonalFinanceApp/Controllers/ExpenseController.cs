@@ -58,7 +58,7 @@ namespace PersonalFinanceApp.Controllers
 
             if (expense == null)
             {
-                return NotFound(new { message = "Despesa não encontrada." });
+                throw new KeyNotFoundException("Despesa não encontrada.");
             }
 
             return Ok(new ExpenseResponseDto
@@ -116,7 +116,7 @@ namespace PersonalFinanceApp.Controllers
 
             if (expense == null)
             {
-                return NotFound(new { message = "Despesa não encontrada." });
+                throw new KeyNotFoundException("Despesa não encontrada.");
             }
 
 
@@ -151,7 +151,7 @@ namespace PersonalFinanceApp.Controllers
 
             if (expense == null)
             {
-                return NotFound(new { message = "Despesa não encontrada." });
+                throw new KeyNotFoundException("Despesa não encontrada.");
             }
 
             await _expenseRepository.DeleteExpenseAsync(expense);

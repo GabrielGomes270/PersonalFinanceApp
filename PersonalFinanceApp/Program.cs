@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PersonalFinanceApp.Data;
 using PersonalFinanceApp.Domain.Entities;
+using PersonalFinanceApp.Middlewares;
 using PersonalFinanceApp.Repositories.Implementations;
 using PersonalFinanceApp.Repositories.Interfaces;
 using PersonalFinanceApp.Services;
@@ -100,6 +101,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication();
 
