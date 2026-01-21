@@ -22,7 +22,9 @@ namespace PersonalFinanceApp.Repositories.Implementations
             int? categoryId, 
             int? month, 
             int page, 
-            int pageSize)
+            int pageSize,
+            string orderBy,
+            string direction)
         {
             var query = _context.Expenses
                 .Include(e => e.Category)
@@ -38,6 +40,8 @@ namespace PersonalFinanceApp.Repositories.Implementations
             {
                 query = query.Where(e => e.Date.Month == month);
             }
+
+            query = ApplyOrdering(query, orderBy, direction);
 
             var totalItems = await query.CountAsync();
 
@@ -80,5 +84,40 @@ namespace PersonalFinanceApp.Repositories.Implementations
             _context.Expenses.Remove(expense);
             await _context.SaveChangesAsync();
         }
+
+
+
+
+        private static IQueryable<Expense> ApplyOrdering(
+        IQueryable<Expense> query,
+        string orderBy,
+        string direction)
+        {
+            var isDesc = direction?.ToLower() == "desc";
+
+            return orderBy?.ToLower() switch
+            {
+                "date" => isDesc
+                    ? query.OrderByDescending(e => e.Date)
+                    : query.OrderBy(e => e.Date),
+
+                "amount" => isDesc
+                    ? query.OrderByDescending(e => e.Amount)
+                    : query.OrderBy(e => e.Amount),
+
+                "description" => isDesc
+                    ? query.OrderByDescending(e => e.Description)
+                    : query.OrderBy(e => e.Description),
+
+                "category" => isDesc
+                    ? query.OrderByDescending(e => e.Category.Name)
+                    : query.OrderBy(e => e.Category.Name),
+
+                _ => query.OrderByDescending(e => e.Date)
+            };
+        }
+
     }
 }
+
+

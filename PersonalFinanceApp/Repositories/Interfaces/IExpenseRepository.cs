@@ -10,7 +10,9 @@ namespace PersonalFinanceApp.Repositories.Interfaces
             int? categoryId,
             int? month,
             int page,
-            int pageSize);
+            int pageSize,
+            string orderBy,
+            string direction);
 
         Task<Expense?> GetExpenseByIdAsync(int id, int userId);
         Task AddExpenseAsync(Expense expense);

@@ -31,7 +31,9 @@ namespace PersonalFinanceApp.Controllers
              int? categoryId,
              int? month,
              int page = 1,
-             int pageSize = 10)
+             int pageSize = 10,
+             string orderBy = "date",
+             string direction = "desc")
         {
             var userId = User.GetUserId();
 
@@ -40,7 +42,9 @@ namespace PersonalFinanceApp.Controllers
                 categoryId,
                 month,
                 page,
-                pageSize);
+                pageSize,
+                orderBy,
+                direction);
 
             var response = new PagedResultDto<ExpenseResponseDto>
             {
