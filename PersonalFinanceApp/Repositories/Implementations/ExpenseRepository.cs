@@ -3,7 +3,7 @@ using PersonalFinanceApp.Data;
 using PersonalFinanceApp.Domain.Entities;
 using PersonalFinanceApp.DTOs;
 using PersonalFinanceApp.Repositories.Interfaces;
-using PersonalFinanceApp.Shared;
+using System.Linq.Expressions;
 
 namespace PersonalFinanceApp.Repositories.Implementations
 {
@@ -114,6 +114,37 @@ namespace PersonalFinanceApp.Repositories.Implementations
                     : query.OrderBy(e => e.Category.Name),
 
                 _ => query.OrderByDescending(e => e.Date)
+            };
+        }
+
+        public async Task<MonthlySummaryDto> GetMonthlySummaryAsync(int userId,  int year, int month)
+        {
+            var expenses = await _context.Expenses
+                .Include(e => e.Category)
+                .Where(e =>
+                    e.UserId == userId &&
+                    e.Date.Year == year &&
+                    e.Date.Month == month)
+                .ToListAsync();
+
+            return new MonthlySummaryDto
+            {
+                Year = year,
+                Month = month,
+                TotalAmount = expenses.Sum(e => e.Amount),
+                ByCategory = expenses
+                .GroupBy(e => new
+                {
+                    e.CategoryId,
+                    e.Category.Name
+                })
+                .Select(g => new CategorySummaryDto
+                {
+                    CategoryId = g.Key.CategoryId,
+                    CategoryName = g.Key.Name,
+                    Total = g.Sum(e => e.Amount)
+                })
+                .ToList()
             };
         }
 

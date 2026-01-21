@@ -18,5 +18,10 @@ namespace PersonalFinanceApp.Repositories.Interfaces
         Task AddExpenseAsync(Expense expense);
         Task UpdateExpenseAsync(Expense expense);
         Task DeleteExpenseAsync(Expense expense);
+
+        Task<MonthlySummaryDto> GetMonthlySummaryAsync(
+        int userId,
+        int year,
+        int month);
     }
 }
