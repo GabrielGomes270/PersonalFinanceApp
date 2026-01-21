@@ -23,5 +23,7 @@ namespace PersonalFinanceApp.Repositories.Interfaces
         int userId,
         int year,
         int month);
+
+        Task<AnnualSummaryDto> GetAnnualSummaryAsync(int userId,  int year);
     }
 }

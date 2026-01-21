@@ -148,6 +148,29 @@ namespace PersonalFinanceApp.Repositories.Implementations
             };
         }
 
+        public async Task<AnnualSummaryDto> GetAnnualSummaryAsync(int userId, int year)
+        {
+            var expenses = await _context.Expenses
+                .Where(e =>
+                    e.UserId == userId &&
+                    e.Date.Year == year)
+                .ToListAsync();
+
+            return new AnnualSummaryDto
+            {
+                Year = year,
+                TotalAmount = expenses.Sum(e => e.Amount),
+                ByMonth = expenses
+                    .GroupBy(e => e.Date.Month)
+                    .Select(g => new MonthlyTotalDto
+                    {
+                        Month = g.Key,
+                        Total = g.Sum(e => e.Amount)
+                    })
+                    .OrderBy(m => m.Month)
+                    .ToList()
+            };
+        }
     }
 }
 
