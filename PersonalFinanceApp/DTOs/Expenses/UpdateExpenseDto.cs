@@ -1,4 +1,4 @@
-﻿namespace PersonalFinanceApp.DTOs
+﻿namespace PersonalFinanceApp.DTOs.Expenses
 {
     public class UpdateExpenseDto
     {

@@ -1,4 +1,4 @@
-﻿namespace PersonalFinanceApp.DTOs
+﻿namespace PersonalFinanceApp.DTOs.Categories
 {
     public class UpdateCategoryDto
     {

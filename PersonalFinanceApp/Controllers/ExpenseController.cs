@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PersonalFinanceApp.Domain.Entities;
-using PersonalFinanceApp.DTOs;
+using PersonalFinanceApp.DTOs.Expenses;
 using PersonalFinanceApp.Extensions;
 using PersonalFinanceApp.Repositories.Interfaces;
 using PersonalFinanceApp.Shared;

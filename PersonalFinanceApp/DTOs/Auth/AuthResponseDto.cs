@@ -1,4 +1,4 @@
-﻿namespace PersonalFinanceApp.DTOs
+﻿namespace PersonalFinanceApp.DTOs.Auth
 {
     public class AuthResponseDto
     {

@@ -1,5 +1,6 @@
 ﻿using PersonalFinanceApp.Domain.Entities;
-using PersonalFinanceApp.DTOs;
+using PersonalFinanceApp.DTOs.Common;
+using PersonalFinanceApp.DTOs.Sumaries;
 
 namespace PersonalFinanceApp.Repositories.Interfaces
 {

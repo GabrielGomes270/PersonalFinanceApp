@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using PersonalFinanceApp.DTOs;
+using PersonalFinanceApp.DTOs.Categories;
 
 namespace PersonalFinanceApp.Validators.Category
 {

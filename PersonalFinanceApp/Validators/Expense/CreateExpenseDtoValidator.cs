@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using PersonalFinanceApp.DTOs;
+using PersonalFinanceApp.DTOs.Expenses;
 
 namespace PersonalFinanceApp.Validators.Expense
 {

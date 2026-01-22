@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PersonalFinanceApp.Domain.Entities;
-using PersonalFinanceApp.DTOs;
+using PersonalFinanceApp.DTOs.Auth;
 using PersonalFinanceApp.Repositories.Interfaces;
 using PersonalFinanceApp.Services;
 

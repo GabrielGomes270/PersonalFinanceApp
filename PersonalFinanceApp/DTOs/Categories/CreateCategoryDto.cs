@@ -1,8 +1,9 @@
-﻿namespace PersonalFinanceApp.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PersonalFinanceApp.DTOs.Categories
 {
-    public class CategoryResponseDto
+    public class CreateCategoryDto
     {
-        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
     }

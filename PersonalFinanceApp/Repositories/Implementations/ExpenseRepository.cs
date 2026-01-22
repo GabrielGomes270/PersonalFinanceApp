@@ -2,6 +2,8 @@
 using PersonalFinanceApp.Data;
 using PersonalFinanceApp.Domain.Entities;
 using PersonalFinanceApp.DTOs;
+using PersonalFinanceApp.DTOs.Common;
+using PersonalFinanceApp.DTOs.Sumaries;
 using PersonalFinanceApp.Repositories.Interfaces;
 using System.Linq.Expressions;
 
