@@ -92,15 +92,33 @@ builder.Configuration
     .AddUserSecrets<Program>(optional: true)
     .AddEnvironmentVariables();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var dbHost = builder.Configuration["DB_HOST"];
+var dbName = builder.Configuration["DB_NAME"];
+var dbUser = builder.Configuration["DB_USER"];
+var dbPassword = builder.Configuration["DB_PASSWORD"];
 
-if (string.IsNullOrWhiteSpace(connectionString))
-    throw new Exception("Connection string não configurada.");
+if (string.IsNullOrWhiteSpace(dbHost) ||
+    string.IsNullOrWhiteSpace(dbName) ||
+    string.IsNullOrWhiteSpace(dbUser) ||
+    string.IsNullOrWhiteSpace(dbPassword))
+{
+    throw new Exception("Variáveis de ambiente do banco de dados não configuradas corretamente.");
+}
+
+var connectionString =
+    $"Server={dbHost};Database={dbName};User={dbUser};Password={dbPassword};";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
